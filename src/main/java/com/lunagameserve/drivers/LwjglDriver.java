@@ -1,11 +1,10 @@
 package com.lunagameserve.drivers;
 
 import com.lunagameserve.Engine;
-import com.lunagameserve.GLScreen;
+import com.lunagameserve.DungeonScreen;
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
-import org.omg.SendingContext.RunTime;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -101,7 +100,7 @@ public class LwjglDriver {
 
         Engine engine = new Engine();
 
-        engine.start(window, new GLScreen());
+        engine.start(window, new DungeonScreen());
     }
 
     public static void main(String[] args) {
