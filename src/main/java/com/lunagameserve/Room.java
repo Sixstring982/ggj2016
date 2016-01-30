@@ -66,10 +66,13 @@ public class Room {
     public boolean isInside(Vector3f vec) {
         return collisionMap != null &&
                isInBounds(vec) &&
-                (collisionMap[(int)(vec.x)][(int) vec.y][(int) vec.z] ||
-                 collisionMap[(int)(vec.x + 0.75f)][(int) vec.y][(int) vec.z] ||
-                 collisionMap[(int)(vec.x + 0.75f)][(int)(vec.y + 0.75f)][(int) vec.z] ||
-                 collisionMap[(int) vec.x][(int) vec.y][(int)(vec.z + 0.75f)]);
+                (collisionMap[(int)(vec.x)][(int)(vec.y)][(int)(vec.z)] ||
+                 collisionMap[(int)(vec.x - 0.5f)][(int)(vec.y)][(int)(vec.z)] ||
+                 collisionMap[(int)(vec.x + 0.5f)][(int)(vec.y)][(int)(vec.z)] ||
+                 collisionMap[(int)(vec.x)][(int)(vec.y - 0.5f)][(int)(vec.z)] ||
+                 collisionMap[(int)(vec.x)][(int)(vec.y + 0.5f)][(int)(vec.z)] ||
+                 collisionMap[(int)(vec.x)][(int)(vec.y)][(int)(vec.z - 0.5f)] ||
+                 collisionMap[(int)(vec.x)][(int)(vec.y)][(int)(vec.z + 0.5f)]);
     }
 
     private boolean isInBounds(Vector3f vec) {

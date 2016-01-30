@@ -14,7 +14,7 @@ public class Camera {
     private final float MOVE_SPEED = 0.1f;
     private final float TURN_SPEED = 0.03f;
     private final float PLAYER_HEIGHT = 1.6f;
-    private Vector3f position = new Vector3f(5.0f, PLAYER_HEIGHT, 5.0f);
+    private Vector3f position = new Vector3f(5.0f, PLAYER_HEIGHT + 0.5f, 5.0f);
     private Vector3f oldPosition = new Vector3f(position);
     private Vector3f target = new Vector3f(1.0f, 0.0f, 0.0f);
 
