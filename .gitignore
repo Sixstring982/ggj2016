@@ -1,0 +1,9 @@
+# IntelliJ Stuff
+*.iml
+out/
+.idea/
+target/
+
+# Emacs backup stuff
+*~
+[#]*[#]
