@@ -10,6 +10,7 @@ public class Voxel {
     private static final float VOXEL_MARGIN = 0.01f;
 
     private Vector3f center;
+    private Vector3f offset = new Vector3f(0, 0, 0);
 
     public Voxel(Vector3f center) {
         this.center = new Vector3f(center);
@@ -17,6 +18,7 @@ public class Voxel {
 
     public void appendTo(VertexArray v) {
         float h = VOXEL_SIZE - VOXEL_MARGIN;
+        Vector3f center = new Vector3f(this.center).add(offset);
         Vector3f I = new Vector3f(1, 0, 0);
         Vector3f J = new Vector3f(0, 1, 0);
         Vector3f K = new Vector3f(0, 0, 1);
@@ -59,5 +61,9 @@ public class Voxel {
         v.add(new Vector3f(center.x, center.y + h, center.z + h), J);
         v.add(new Vector3f(center.x + h, center.y + h, center.z + h), J);
         v.add(new Vector3f(center.x + h, center.y + h, center.z), J);
+    }
+
+    public void applyOffset(Vector3f offset) {
+        this.offset = new Vector3f(offset);
     }
 }

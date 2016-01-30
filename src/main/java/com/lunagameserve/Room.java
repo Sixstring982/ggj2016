@@ -2,11 +2,10 @@ package com.lunagameserve;
 
 import org.jnbt.*;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -18,8 +17,11 @@ public class Room {
     private int width;
     private int height;
     private int length;
+    private Vector3f offset = new Vector3f(0, 0, 0);
     boolean[][][] collisionMap = null;
     private VertexArray array = new VertexArray();
+    private Set<Direction> exits = new HashSet<Direction>();
+    private Set<Direction> hookups = new HashSet<Direction>();
 
     public void load(String path) throws IOException {
         voxels.clear();
@@ -48,6 +50,20 @@ public class Room {
                 }
             }
         }
+
+        /* Set up exit flags */
+        if (!collisionMap[7][1][0]) {
+            exits.add(Direction.NORTH);
+        }
+        if (!collisionMap[0][1][7]) {
+            exits.add(Direction.EAST);
+        }
+        if (!collisionMap[7][1][15]) {
+            exits.add(Direction.SOUTH);
+        }
+        if (!collisionMap[15][1][7]) {
+            exits.add(Direction.WEST);
+        }
         send();
     }
 
@@ -64,6 +80,7 @@ public class Room {
     }
 
     public boolean isInside(Vector3f vec) {
+        vec = new Vector3f(vec).sub(offset);
         return collisionMap != null &&
                isInBounds(vec) &&
                 (collisionMap[(int)(vec.x)][(int)(vec.y)][(int)(vec.z)] ||
@@ -76,8 +93,53 @@ public class Room {
     }
 
     private boolean isInBounds(Vector3f vec) {
-        return vec.x >= 0 && vec.x < width &&
-               vec.y >= 0 && vec.y < height &&
-               vec.z >= 0 && vec.z < length;
+        return vec.x >= 0.5f && vec.x < width - 0.5f &&
+               vec.y >= 0.5f && vec.y < height - 0.5f &&
+               vec.z >= 0.5f && vec.z < length - 0.5f;
+    }
+
+    public void setOffset(Vector3i offset) {
+        this.offset.x = offset.x;
+        this.offset.y = offset.y;
+        this.offset.z = offset.z;
+
+        array.clear();
+        for (Voxel v : voxels) {
+            v.applyOffset(this.offset);
+            v.appendTo(array);
+        }
+        array.send();
+    }
+
+    public boolean containsWithOffset(Vector3f eye) {
+        return isInBounds(new Vector3f(eye).sub(offset));
+    }
+
+    public Set<Direction> getExits() {
+        return new HashSet<Direction>(exits);
+    }
+
+    public void hookup(Direction dir) {
+        hookups.add(dir);
+    }
+
+    public boolean isHooked(Direction dir) {
+        return hookups.contains(dir);
+    }
+
+    public Vector3i getBoundary(Direction dir) {
+        switch (dir) {
+            case NORTH: return new Vector3i(0, 0, -(length - 1));
+            case EAST:  return new Vector3i(-(width - 1), 0, 0);
+            case SOUTH: return new Vector3i(0, 0, length - 1);
+            case WEST:  return new Vector3i(width - 1, 0, 0);
+            default: throw new IllegalArgumentException();
+        }
+    }
+
+    public Vector3i getOffset() {
+        return new Vector3i(
+                (int)offset.x, (int)offset.y, (int)offset.z
+        );
     }
 }

@@ -11,13 +11,13 @@ import static org.lwjgl.glfw.GLFW.*;
  * Created by sixstring982 on 1/29/16.
  */
 public class DungeonScreen implements Screen {
-    private Room room = new Room();
+    private World world = new World();
     private Camera camera = new Camera();
     private ShaderProgram program = new ShaderProgram();
 
     public DungeonScreen() {
         try {
-            room.load("/models/room_2.schematic");
+            world.load();
             program.init("/shaders/vertex/default.vert",
                          "/shaders/fragment/default.frag");
         } catch (IOException e) {
@@ -32,11 +32,11 @@ public class DungeonScreen implements Screen {
 
         camera.update(window, new Predicate() {
             public boolean eval() {
-                return room.isInside(camera.getEye()) ||
-                       room.isInside(camera.getFeet());
+                return world.isInside(camera.getEye()) ||
+                       world.isInside(camera.getFeet());
             }
         });
-        if (room.isInside(camera.getEye())) {
+        if (world.isInside(camera.getEye())) {
             camera.undoMove();
         }
         return UpdatePacket.makeKeep();
@@ -49,6 +49,6 @@ public class DungeonScreen implements Screen {
         program.setFloat((float)glfwGetTime(), "iGlobalTime");
         program.setVector3(camera.getEye(), "eye");
 
-        room.render();
+        world.render();
     }
 }
