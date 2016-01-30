@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import static org.lwjgl.opengl.GL11.*;
+
 /**
  * Created by sixstring982 on 1/30/16.
  */
@@ -16,14 +18,17 @@ public class World {
     private static final int WORLD_SIZE = 10;
     private List<Room> rooms = new ArrayList<Room>();
     private Random rand = new Random(System.nanoTime());
+    private VertexArray visibleBlocks = new VertexArray();
 
     void load() throws IOException {
         String[] validRooms = new String[]{
                 "template"
         };
 
-        Room r = addRoom(validRooms[0], new Vector3i(0, 0, 0));
+        Room r = genRoom(validRooms[0], new Vector3i(0, 0, 0));
+        rooms.add(r);
         hookupExits(r, validRooms);
+        visibleBlocks.create();
     }
 
     private void hookupExits(Room room, String[] roomFiles) throws IOException {
@@ -36,28 +41,47 @@ public class World {
 
         for (Direction e : shuffledExits) {
             if (!room.isHooked(e)) {
+                /* Try a few times to hook up a room here */
+                for (int i = 0; i < 5; i++) {
                 /* Load a new room here and hook up its exits */
-                Room c = addRoom(roomFiles[rand.nextInt(roomFiles.length)],
-                        new Vector3i(room.getOffset()).add(room.getBoundary(e)));
-                room.hookup(e);
-                c.hookup(e.opposite());
-                hookupExits(c, roomFiles);
+                    Room c = genRoom(roomFiles[rand.nextInt(roomFiles.length)],
+                            new Vector3i(room.getOffset()).add(room.getBoundary(e)));
+                    if (c.getExits().contains(e.opposite()) &&
+                       !c.isHooked(e.opposite())) {
+                        room.hookup(e);
+                        c.hookup(e.opposite());
+                        rooms.add(c);
+                        hookupExits(c, roomFiles);
+                        break;
+                    }
+                }
             }
         }
     }
 
-    private Room addRoom(String filename, Vector3i offset) throws IOException {
+    public void updateRenderTargets(Vector3f eye, float distance) {
+        visibleBlocks.clear();
+        for (Room r : rooms) {
+            r.addVisibleRooms(visibleBlocks, eye, distance);
+        }
+        visibleBlocks.send();
+    }
+
+    private Room genRoom(String filename, Vector3i offset) throws IOException {
         Room room = new Room();
         room.load("/models/" + filename + ".schematic");
         room.send();
         room.setOffset(offset);
-        rooms.add(room);
         return room;
     }
 
     void render() {
-        for (Room r : rooms) {
-            r.render();
+        if (visibleBlocks.isReady()) {
+            visibleBlocks.draw(GL_QUADS, 0, 1);
+        } else {
+            for (Room r : rooms) {
+                r.render();
+            }
         }
     }
 

@@ -36,6 +36,8 @@ public class DungeonScreen implements Screen {
                        world.isInside(camera.getFeet());
             }
         });
+
+        world.updateRenderTargets(camera.getEye(), 5.0f);
         if (world.isInside(camera.getEye())) {
             camera.undoMove();
         }

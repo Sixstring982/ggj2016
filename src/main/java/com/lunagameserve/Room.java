@@ -142,4 +142,17 @@ public class Room {
                 (int)offset.x, (int)offset.y, (int)offset.z
         );
     }
+
+    public void addVisibleRooms(VertexArray visibleBlocks,
+                                Vector3f eye, float distance) {
+        /* Is the eye close? */
+        if (new Vector3f(offset).add(width / 2.0f, 0.0f, length / 2.0f)
+                .sub(eye).length() < length + distance) {
+            for (Voxel v : voxels) {
+                if (v.getAbsolutePosition().sub(eye).length() < distance) {
+                    v.appendTo(visibleBlocks);
+                }
+            }
+        }
+    }
 }

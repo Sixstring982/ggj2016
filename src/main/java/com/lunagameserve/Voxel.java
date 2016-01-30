@@ -63,6 +63,10 @@ public class Voxel {
         v.add(new Vector3f(center.x + h, center.y + h, center.z), J);
     }
 
+    public Vector3f getAbsolutePosition() {
+        return new Vector3f(offset).add(center);
+    }
+
     public void applyOffset(Vector3f offset) {
         this.offset = new Vector3f(offset);
     }
