@@ -1,7 +1,9 @@
 package com.lunagameserve;
 
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GLUtil;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -19,11 +21,14 @@ public class VertexArray {
     private static int vaoId = -1;
     private int vertId;
     private int normId;
+    private int texId;
     private boolean ready = false;
     private List<Vector3f> verts = new ArrayList<Vector3f>();
     private List<Vector3f> normals = new ArrayList<Vector3f>();
+    private List<Vector2f> texs = new ArrayList<Vector2f>();
     private int remoteVerts;
     private int remoteNormals;
+    private int remoteTexs;
 
     public void create() {
         if (vaoId == -1) {
@@ -32,6 +37,7 @@ public class VertexArray {
         }
         vertId = glGenBuffers();
         normId = glGenBuffers();
+        texId = glGenBuffers();
     }
 
     public void clear() {
@@ -43,9 +49,10 @@ public class VertexArray {
         return ready;
     }
 
-    public void add(Vector3f v, Vector3f n) {
+    public void add(Vector3f v, Vector3f n, Vector2f t) {
         verts.add(v);
         normals.add(n);
+        texs.add(t);
     }
 
     public void send() {
@@ -70,12 +77,25 @@ public class VertexArray {
         buf.flip();
         glBindBuffer(GL_ARRAY_BUFFER, normId);
         glBufferData(GL_ARRAY_BUFFER, buf, GL_STATIC_DRAW);
+
+        remoteTexs = texs.size();
+        buf = BufferUtils.createFloatBuffer(remoteTexs * 3);
+        for (Vector2f t : texs) {
+            buf.put(t.x);
+            buf.put(t.y);
+        }
+        buf.flip();
+        glBindBuffer(GL_ARRAY_BUFFER, texId);
+        glBufferData(GL_ARRAY_BUFFER, buf, GL_STATIC_DRAW);
+
+        GLUtil.checkGLError();
         ready = true;
     }
 
     public void draw(final int mode,
                      final int vertId,
-                     final int normId) {
+                     final int normId,
+                     final int texId) {
         if (!isReady()) {
             throw new RuntimeException("VertexArray not ready.");
         }
@@ -87,8 +107,13 @@ public class VertexArray {
         glBindBuffer(GL_ARRAY_BUFFER, this.normId);
         glVertexAttribPointer(normId, 3, GL_FLOAT, false, 0, 0);
 
+        glEnableVertexAttribArray(texId);
+        glBindBuffer(GL_ARRAY_BUFFER, this.texId);
+        glVertexAttribPointer(texId, 2, GL_FLOAT, false, 0, 0);
+
         glDrawArrays(mode, 0, remoteVerts);
 
+        glDisableVertexAttribArray(texId);
         glDisableVertexAttribArray(normId);
         glDisableVertexAttribArray(vertId);
     }

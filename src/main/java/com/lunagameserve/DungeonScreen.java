@@ -1,7 +1,6 @@
 package com.lunagameserve;
 
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 
 import java.io.IOException;
 
@@ -14,12 +13,16 @@ public class DungeonScreen implements Screen {
     private World world = new World();
     private Camera camera = new Camera();
     private ShaderProgram program = new ShaderProgram();
+    private Texture2D texture = new Texture2D();
 
     public DungeonScreen() {
         try {
             world.load();
+            texture.load(getClass().getResourceAsStream("/textures/cobble.png"));
             program.init("/shaders/vertex/default.vert",
                          "/shaders/fragment/default.frag");
+            program.use();
+            program.setTextureUnit(texture, "sampler");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

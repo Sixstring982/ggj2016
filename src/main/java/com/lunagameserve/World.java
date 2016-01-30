@@ -4,10 +4,7 @@ import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -19,10 +16,11 @@ public class World {
     private List<Room> rooms = new ArrayList<Room>();
     private Random rand = new Random(System.nanoTime());
     private VertexArray visibleBlocks = new VertexArray();
+    private Set<Vector3i> takenOffsets = new HashSet<Vector3i>();
 
     void load() throws IOException {
         String[] validRooms = new String[]{
-                "template"
+                "template", "room_1", "room_3", "room_4"
         };
 
         Room r = genRoom(validRooms[0], new Vector3i(0, 0, 0));
@@ -41,17 +39,24 @@ public class World {
 
         for (Direction e : shuffledExits) {
             if (!room.isHooked(e)) {
+                Vector3i offset = new Vector3i(room.getOffset())
+                                              .add(room.getBoundary(e));
+                /* Don't want two rooms in the same place */
+                if (takenOffsets.contains(offset)) {
+                    continue;
+                }
                 /* Try a few times to hook up a room here */
                 for (int i = 0; i < 5; i++) {
                 /* Load a new room here and hook up its exits */
                     Room c = genRoom(roomFiles[rand.nextInt(roomFiles.length)],
-                            new Vector3i(room.getOffset()).add(room.getBoundary(e)));
+                            offset);
                     if (c.getExits().contains(e.opposite()) &&
                        !c.isHooked(e.opposite())) {
                         room.hookup(e);
                         c.hookup(e.opposite());
                         rooms.add(c);
                         hookupExits(c, roomFiles);
+                        takenOffsets.add(offset);
                         break;
                     }
                 }
@@ -77,7 +82,7 @@ public class World {
 
     void render() {
         if (visibleBlocks.isReady()) {
-            visibleBlocks.draw(GL_QUADS, 0, 1);
+            visibleBlocks.draw(GL_QUADS, 0, 1, 2);
         } else {
             for (Room r : rooms) {
                 r.render();

@@ -2,6 +2,7 @@ package com.lunagameserve;
 
 import org.apache.commons.io.IOUtils;
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GLUtil;
@@ -100,5 +101,18 @@ public class ShaderProgram {
     public void setFloat(float val, String name) {
         int loc = glGetUniformLocation(programId, name);
         glUniform1f(loc, val);
+    }
+
+    public void setVector2(Vector2f vec, String name) {
+        int loc = glGetUniformLocation(programId, name);
+        FloatBuffer buf = BufferUtils.createFloatBuffer(2);
+        vec.get(buf);
+        glUniform2fv(loc, buf);
+    }
+
+    public void setTextureUnit(Texture2D tex, String name) {
+        int loc = glGetUniformLocation(programId, name);
+        tex.bind();
+        glUniform1i(loc, tex.getUnit());
     }
 }
