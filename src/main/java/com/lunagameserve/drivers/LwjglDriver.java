@@ -52,8 +52,8 @@ public class LwjglDriver {
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
-        int WIDTH = 300;
-        int HEIGHT = 300;
+        int WIDTH = 640;
+        int HEIGHT = 480;
 
         // Create the window
         window = glfwCreateWindow(WIDTH, HEIGHT, "Hello World!", NULL, NULL);

@@ -15,6 +15,12 @@ public class Engine {
         Stack<Screen> screenStack = new Stack<Screen>();
         screenStack.push(top);
 
+        glEnable(GL_BLEND);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
         while (glfwWindowShouldClose(window) == GLFW_FALSE &&
