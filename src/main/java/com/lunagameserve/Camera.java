@@ -50,4 +50,8 @@ public class Camera {
             position.y -= MOVE_SPEED;
         }
     }
+
+    public Vector3f getEye() {
+        return position;
+    }
 }

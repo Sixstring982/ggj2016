@@ -2,6 +2,7 @@ package com.lunagameserve;
 
 import org.apache.commons.io.IOUtils;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GLUtil;
 
@@ -87,5 +88,17 @@ public class ShaderProgram {
 
     public boolean isReady() {
         return ready;
+    }
+
+    public void setVector3(Vector3f vec, String name) {
+        int loc = glGetUniformLocation(programId, name);
+        FloatBuffer buf = BufferUtils.createFloatBuffer(3);
+        vec.get(buf);
+        glUniform3fv(loc, buf);
+    }
+
+    public void setFloat(float val, String name) {
+        int loc = glGetUniformLocation(programId, name);
+        glUniform1f(loc, val);
     }
 }
