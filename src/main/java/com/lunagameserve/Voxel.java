@@ -7,7 +7,7 @@ import org.joml.Vector3f;
  */
 public class Voxel {
     private static final float VOXEL_SIZE = 1.0f;
-    private static final float VOXEL_MARGIN = 0.05f;
+    private static final float VOXEL_MARGIN = 0.01f;
     private static final float VOXEL_HALF = VOXEL_SIZE / 2.0f;
 
     private Vector3f center;

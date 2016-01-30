@@ -2,7 +2,6 @@ package com.lunagameserve;
 
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GLUtil;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;

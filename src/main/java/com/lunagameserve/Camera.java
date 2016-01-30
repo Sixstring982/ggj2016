@@ -6,7 +6,6 @@ import org.joml.Vector3f;
 import java.nio.ByteBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
 
 /**
  * Created by sixstring982 on 1/29/16.
@@ -15,7 +14,8 @@ public class Camera {
     private final float MOVE_SPEED = 0.1f;
     private final float TURN_SPEED = 0.03f;
     private final float PLAYER_HEIGHT = 1.6f;
-    private Vector3f position = new Vector3f(0.0f, 1.0f, 5.0f);
+    private Vector3f position = new Vector3f(5.0f, PLAYER_HEIGHT, 5.0f);
+    private Vector3f oldPosition = new Vector3f(position);
     private Vector3f target = new Vector3f(1.0f, 0.0f, 0.0f);
 
     private float theta = (float)Math.PI / 2.0f;
@@ -34,8 +34,9 @@ public class Camera {
                 .lookAt(position, posTarget, new Vector3f(0.0f, 1.0f, 0.0f));
     }
 
-    public void update(final long window) {
+    public void update(final long window, Predicate collisionPred) {
         float oldTheta = theta;
+        oldPosition = new Vector3f(position);
         if (glfwGetKey(window, GLFW_KEY_A) == 1) {
             theta += TURN_SPEED;
         }
@@ -45,24 +46,36 @@ public class Camera {
         }
 
         if (glfwGetKey(window, GLFW_KEY_W) == 1) {
-            position.fma(MOVE_SPEED, target);
+            position.x += MOVE_SPEED * target.x;
+            if (collisionPred.eval()) {
+                position.x -= MOVE_SPEED * target.x;
+            }
+
+            position.z += MOVE_SPEED * target.z;
+            if (collisionPred.eval()) {
+                position.z -= MOVE_SPEED * target.z;
+            }
         }
 
         if (glfwGetKey(window, GLFW_KEY_S) == 1) {
-            position.fma(-MOVE_SPEED, target);
-        }
+            position.x -= MOVE_SPEED * target.x;
+            if (collisionPred.eval()) {
+                position.x += MOVE_SPEED * target.x;
+            }
 
-        if (glfwGetKey(window, GLFW_KEY_SPACE) == 1) {
-            position.y += MOVE_SPEED;
-        }
-
-        if (glfwGetKey(window, GLFW_KEY_C) == 1) {
-            position.y -= MOVE_SPEED;
+            position.z -= MOVE_SPEED * target.z;
+            if (collisionPred.eval()) {
+                position.z += MOVE_SPEED * target.z;
+            }
         }
 
         if (theta != oldTheta) {
             updateTarget();
         }
+    }
+
+    public void undoMove() {
+        this.position = new Vector3f(oldPosition);
     }
 
     private void updateTarget() {
@@ -77,6 +90,6 @@ public class Camera {
     }
 
     public Vector3f getFeet() {
-        return new Vector3f(position).sub(0.0f, PLAYER_HEIGHT, 0.0f);
+        return new Vector3f(position).sub(0.0f, 0.2f, 0.0f);
     }
 }

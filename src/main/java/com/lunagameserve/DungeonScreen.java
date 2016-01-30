@@ -30,7 +30,15 @@ public class DungeonScreen implements Screen {
             return UpdatePacket.makePop();
         }
 
-        camera.update(window);
+        camera.update(window, new Predicate() {
+            public boolean eval() {
+                return room.isInside(camera.getEye()) ||
+                       room.isInside(camera.getFeet());
+            }
+        });
+        if (room.isInside(camera.getEye())) {
+            camera.undoMove();
+        }
         return UpdatePacket.makeKeep();
     }
 

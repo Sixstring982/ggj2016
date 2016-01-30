@@ -15,6 +15,10 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Room {
     private List<Voxel> voxels = new ArrayList<Voxel>();
+    private int width;
+    private int height;
+    private int length;
+    boolean[][][] collisionMap = null;
     private VertexArray array = new VertexArray();
 
     public void load(String path) throws IOException {
@@ -24,9 +28,11 @@ public class Room {
 
         CompoundTag root = (CompoundTag)in.readTag();
         Map<String, Tag> map = root.getValue();
-        short width = ((ShortTag) map.get("Width")).getValue();
-        short height = ((ShortTag) map.get("Height")).getValue();
-        short length = ((ShortTag) map.get("Length")).getValue();
+        this.width = ((ShortTag) map.get("Width")).getValue();
+        this.height = ((ShortTag) map.get("Height")).getValue();
+        this.length = ((ShortTag) map.get("Length")).getValue();
+
+        this.collisionMap = new boolean[width][height][length];
 
         byte[] bytes = ((ByteArrayTag) map.get("Blocks")).getValue();
 
@@ -35,6 +41,9 @@ public class Room {
                 for (int x = 0; x < width; x++) {
                     if (bytes[(y * length + z) * width + x] != 0) {
                         voxels.add(new Voxel(new Vector3f(x, y, z)));
+                        collisionMap[x][y][z] = true;
+                    } else {
+                        collisionMap[x][y][z] = false;
                     }
                 }
             }
@@ -52,5 +61,20 @@ public class Room {
 
     public void render() {
         array.draw(GL_QUADS, 0, 1);
+    }
+
+    public boolean isInside(Vector3f vec) {
+        return collisionMap != null &&
+               isInBounds(vec) &&
+                (collisionMap[(int)(vec.x)][(int) vec.y][(int) vec.z] ||
+                 collisionMap[(int)(vec.x + 0.75f)][(int) vec.y][(int) vec.z] ||
+                 collisionMap[(int)(vec.x + 0.75f)][(int)(vec.y + 0.75f)][(int) vec.z] ||
+                 collisionMap[(int) vec.x][(int) vec.y][(int)(vec.z + 0.75f)]);
+    }
+
+    private boolean isInBounds(Vector3f vec) {
+        return vec.x >= 0 && vec.x < width &&
+               vec.y >= 0 && vec.y < height &&
+               vec.z >= 0 && vec.z < length;
     }
 }
