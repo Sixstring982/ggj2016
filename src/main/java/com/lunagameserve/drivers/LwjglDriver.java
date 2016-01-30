@@ -17,6 +17,7 @@ public class LwjglDriver {
 
     private GLFWErrorCallback errorCallback;
     private GLFWKeyCallback   keyCallback;
+    private GLFWWindowSizeCallback windowSizeCallback;
 
     // The window handle
     private long window;
@@ -31,6 +32,7 @@ public class LwjglDriver {
             // Release window and window callbacks
             glfwDestroyWindow(window);
             keyCallback.release();
+            windowSizeCallback.release();
         } finally {
             // Terminate GLFW and release the GLFWErrorCallback
             glfwTerminate();
@@ -66,6 +68,13 @@ public class LwjglDriver {
             public void invoke(long window, int key, int scancode, int action, int mods) {
                 if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
                     glfwSetWindowShouldClose(window, GLFW_TRUE); // We will detect this in our rendering loop
+            }
+        });
+
+        glfwSetWindowSizeCallback(window, windowSizeCallback = new GLFWWindowSizeCallback() {
+            @Override
+            public void invoke(long window, int width, int height) {
+                glViewport(0, 0, width, height);
             }
         });
 

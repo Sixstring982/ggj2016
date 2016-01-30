@@ -9,7 +9,7 @@ uniform float iGlobalTime;
 uniform vec3 eye;
 
 vec3 lighting(in vec3 ro) {
-    vec3 light = vec3(sin(iGlobalTime), 1.0, cos(iGlobalTime));
+    vec3 light = eye + vec3(0.0, 1.0, 0.0);
     vec3 N = frag_normal;
     vec3 V = normalize(eye - ro);
     vec3 L = normalize(light - ro);

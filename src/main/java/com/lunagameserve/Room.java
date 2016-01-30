@@ -1,10 +1,12 @@
 package com.lunagameserve;
 
+import org.jnbt.*;
 import org.joml.Vector3f;
-import org.lwjgl.opengl.GLUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -15,11 +17,35 @@ public class Room {
     private List<Voxel> voxels = new ArrayList<Voxel>();
     private VertexArray array = new VertexArray();
 
-    public void init() {
+    public void load(String path) throws IOException {
+        voxels.clear();
+        NBTInputStream in = new NBTInputStream(
+                getClass().getResourceAsStream(path));
+
+        CompoundTag root = (CompoundTag)in.readTag();
+        Map<String, Tag> map = root.getValue();
+        short width = ((ShortTag) map.get("Width")).getValue();
+        short height = ((ShortTag) map.get("Height")).getValue();
+        short length = ((ShortTag) map.get("Length")).getValue();
+
+        byte[] bytes = ((ByteArrayTag) map.get("Blocks")).getValue();
+
+        for (int y = 0; y < height; y++) {
+            for (int z = 0; z < length; z++) {
+                for (int x = 0; x < width; x++) {
+                    if (bytes[(y * length + z) * width + x] != 0) {
+                        voxels.add(new Voxel(new Vector3f(x, y, z)));
+                    }
+                }
+            }
+        }
+        send();
+    }
+
+    public void send() {
         array.create();
-        for (int i = 0; i < 10; i++) {
-            voxels.add(new Voxel(new Vector3f(i, i, i)));
-            voxels.get(i).appendTo(array);
+        for (Voxel v : voxels) {
+            v.appendTo(array);
         }
         array.send();
     }

@@ -2,13 +2,12 @@ package com.lunagameserve;
 
 import org.joml.Vector3f;
 
-import static org.lwjgl.opengl.GL11.*;
-
 /**
  * Created by sixstring982 on 1/29/16.
  */
 public class Voxel {
     private static final float VOXEL_SIZE = 1.0f;
+    private static final float VOXEL_MARGIN = 0.05f;
     private static final float VOXEL_HALF = VOXEL_SIZE / 2.0f;
 
     private Vector3f center;
@@ -18,7 +17,7 @@ public class Voxel {
     }
 
     public void appendTo(VertexArray v) {
-        float h = VOXEL_HALF;
+        float h = VOXEL_HALF - VOXEL_MARGIN;
         Vector3f I = new Vector3f(1, 0, 0);
         Vector3f J = new Vector3f(0, 1, 0);
         Vector3f K = new Vector3f(0, 0, 1);

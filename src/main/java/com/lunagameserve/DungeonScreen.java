@@ -16,8 +16,8 @@ public class DungeonScreen implements Screen {
     private ShaderProgram program = new ShaderProgram();
 
     public DungeonScreen() {
-        room.init();
         try {
+            room.load("/models/room_2.schematic");
             program.init("/shaders/vertex/default.vert",
                          "/shaders/fragment/default.frag");
         } catch (IOException e) {
