@@ -1,12 +1,16 @@
 package com.lunagameserve;
 
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
  * Created by sixstring982 on 1/29/16.
  */
 public class GLScreen implements Screen {
-    public UpdatePacket update() {
+    public UpdatePacket update(final long window) {
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == 1) {
+            return UpdatePacket.makePop();
+        }
         return UpdatePacket.makeKeep();
     }
 

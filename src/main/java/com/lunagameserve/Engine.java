@@ -21,7 +21,7 @@ public class Engine {
                screenStack.size() > 0) {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
-            screenStack.peek().update();
+            screenStack.peek().update(window);
             screenStack.peek().render();
 
             glfwSwapBuffers(window); // swap the color buffers
