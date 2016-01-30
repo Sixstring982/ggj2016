@@ -1,5 +1,7 @@
 package com.lunagameserve.drivers;
 
+import com.lunagameserve.Engine;
+import com.lunagameserve.GLScreen;
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
@@ -97,17 +99,9 @@ public class LwjglDriver {
         // Set the clear color
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-        // Run the rendering loop until the user has attempted to close
-        // the window or has pressed the ESCAPE key.
-        while ( glfwWindowShouldClose(window) == GLFW_FALSE ) {
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+        Engine engine = new Engine();
 
-            glfwSwapBuffers(window); // swap the color buffers
-
-            // Poll for window events. The key callback above will only be
-            // invoked during this call.
-            glfwPollEvents();
-        }
+        engine.start(window, new GLScreen());
     }
 
     public static void main(String[] args) {
