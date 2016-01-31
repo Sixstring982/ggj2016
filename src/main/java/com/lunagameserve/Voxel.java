@@ -8,7 +8,7 @@ import org.joml.Vector3f;
  */
 public class Voxel {
     private static final float VOXEL_SIZE = 1.0f;
-    private static final float VOXEL_MARGIN = 0.01f;
+    private static final float VOXEL_MARGIN = 0.0f;
 
     private Vector3f center;
     private Vector3f offset = new Vector3f(0, 0, 0);
@@ -33,40 +33,40 @@ public class Voxel {
         Vector2f c4 = new Vector2f(0, 1);
 
         /* append bottom */
-        v.add(new Vector3f(center.x, center.y, center.z), nJ, c1);
-        v.add(new Vector3f(center.x + h, center.y, center.z), nJ, c2);
-        v.add(new Vector3f(center.x + h, center.y, center.z + h), nJ, c3);
-        v.add(new Vector3f(center.x, center.y, center.z + h), nJ, c4);
+        v.add(new Vector3f(center.x, center.y, center.z), nJ, c1, 0);
+        v.add(new Vector3f(center.x + h, center.y, center.z), nJ, c2, 0);
+        v.add(new Vector3f(center.x + h, center.y, center.z + h), nJ, c3, 0);
+        v.add(new Vector3f(center.x, center.y, center.z + h), nJ, c4, 0);
 
         /* append edge 1 */
-        v.add(new Vector3f(center.x, center.y, center.z), nK, c1);
-        v.add(new Vector3f(center.x, center.y + h, center.z), nK, c2);
-        v.add(new Vector3f(center.x + h, center.y + h, center.z), nK, c3);
-        v.add(new Vector3f(center.x + h, center.y, center.z), nK, c4);
+        v.add(new Vector3f(center.x, center.y, center.z), nK, c1, 0);
+        v.add(new Vector3f(center.x, center.y + h, center.z), nK, c2, 0);
+        v.add(new Vector3f(center.x + h, center.y + h, center.z), nK, c3, 0);
+        v.add(new Vector3f(center.x + h, center.y, center.z), nK, c4, 0);
 
         /* append edge 2 */
-        v.add(new Vector3f(center.x, center.y, center.z), nI, c1);
-        v.add(new Vector3f(center.x, center.y, center.z + h), nI, c2);
-        v.add(new Vector3f(center.x, center.y + h, center.z + h), nI, c3);
-        v.add(new Vector3f(center.x, center.y + h, center.z), nI, c4);
+        v.add(new Vector3f(center.x, center.y, center.z), nI, c1, 0);
+        v.add(new Vector3f(center.x, center.y, center.z + h), nI, c2, 0);
+        v.add(new Vector3f(center.x, center.y + h, center.z + h), nI, c3, 0);
+        v.add(new Vector3f(center.x, center.y + h, center.z), nI, c4, 0);
 
         /* append edge 3 */
-        v.add(new Vector3f(center.x + h, center.y, center.z), I, c1);
-        v.add(new Vector3f(center.x + h, center.y + h, center.z), I, c2);
-        v.add(new Vector3f(center.x + h, center.y + h, center.z + h), I, c3);
-        v.add(new Vector3f(center.x + h, center.y, center.z + h), I, c4);
+        v.add(new Vector3f(center.x + h, center.y, center.z), I, c1, 0);
+        v.add(new Vector3f(center.x + h, center.y + h, center.z), I, c2, 0);
+        v.add(new Vector3f(center.x + h, center.y + h, center.z + h), I, c3, 0);
+        v.add(new Vector3f(center.x + h, center.y, center.z + h), I, c4, 0);
 
         /* append edge 4 */
-        v.add(new Vector3f(center.x, center.y, center.z + h), K, c1);
-        v.add(new Vector3f(center.x + h, center.y, center.z + h), K, c2);
-        v.add(new Vector3f(center.x + h, center.y + h, center.z + h), K, c3);
-        v.add(new Vector3f(center.x, center.y + h, center.z + h), K, c4);
+        v.add(new Vector3f(center.x, center.y, center.z + h), K, c1, 0);
+        v.add(new Vector3f(center.x + h, center.y, center.z + h), K, c2, 0);
+        v.add(new Vector3f(center.x + h, center.y + h, center.z + h), K, c3, 0);
+        v.add(new Vector3f(center.x, center.y + h, center.z + h), K, c4, 0);
 
         /* append top */
-        v.add(new Vector3f(center.x, center.y + h, center.z), J, c1);
-        v.add(new Vector3f(center.x, center.y + h, center.z + h), J, c2);
-        v.add(new Vector3f(center.x + h, center.y + h, center.z + h), J, c3);
-        v.add(new Vector3f(center.x + h, center.y + h, center.z), J, c4);
+        v.add(new Vector3f(center.x, center.y + h, center.z), J, c1, 0);
+        v.add(new Vector3f(center.x, center.y + h, center.z + h), J, c2, 0);
+        v.add(new Vector3f(center.x + h, center.y + h, center.z + h), J, c3, 0);
+        v.add(new Vector3f(center.x + h, center.y + h, center.z), J, c4, 0);
     }
 
     public Vector3f getAbsolutePosition() {

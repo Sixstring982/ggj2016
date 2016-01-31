@@ -76,7 +76,7 @@ public class Room {
     }
 
     public void render() {
-        array.draw(GL_QUADS, 0, 1, 2);
+        array.draw(GL_QUADS, 0, 1, 2, 3);
     }
 
     public boolean isInside(Vector3f vec) {

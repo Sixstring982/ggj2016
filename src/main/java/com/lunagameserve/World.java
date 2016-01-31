@@ -82,7 +82,7 @@ public class World {
 
     void render() {
         if (visibleBlocks.isReady()) {
-            visibleBlocks.draw(GL_QUADS, 0, 1, 2);
+            visibleBlocks.draw(GL_QUADS, 0, 1, 2, 3);
         } else {
             for (Room r : rooms) {
                 r.render();

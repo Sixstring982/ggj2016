@@ -22,21 +22,21 @@ public class Texture2D {
         if (!ready) {
             throw new IllegalStateException("Texture not ready.");
         }
-        glActiveTexture(GL_TEXTURE0 + getUnit());
+        glActiveTexture(GL_TEXTURE0 + unitId);
         glBindTexture(GL_TEXTURE_2D, id);
     }
 
     public void load(InputStream stream) throws IOException {
         PNGDecoder dec = new PNGDecoder(stream);
         ByteBuffer buf = ByteBuffer
-                          .allocateDirect(3 * dec.getWidth() * dec.getHeight());
-        dec.decode(buf, dec.getWidth() * 3, PNGDecoder.Format.RGB);
+                          .allocateDirect(4 * dec.getWidth() * dec.getHeight());
+        dec.decode(buf, dec.getWidth() * 4, PNGDecoder.Format.RGBA);
         buf.flip();
 
         id = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, id);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, dec.getWidth(), dec.getHeight(),
-                0, GL_RGB, GL_UNSIGNED_BYTE, buf);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, dec.getWidth(), dec.getHeight(),
+                0, GL_RGBA, GL_UNSIGNED_BYTE, buf);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         stream.close();

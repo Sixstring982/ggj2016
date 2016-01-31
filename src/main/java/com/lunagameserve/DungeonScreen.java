@@ -1,6 +1,7 @@
 package com.lunagameserve;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import java.io.IOException;
 
@@ -14,16 +15,23 @@ public class DungeonScreen implements Screen {
     private Camera camera = new Camera();
     private ShaderProgram program = new ShaderProgram();
     private Texture2D texture = new Texture2D();
+    private Texture2D enemyTex = new Texture2D();
+    private Billboard enemy = new Billboard();
 
     public DungeonScreen() {
         try {
             world.load();
             texture.load(getClass().getResourceAsStream("/textures/cobble.png"));
+            enemyTex.load(getClass().getResourceAsStream("/textures/enemy.png"));
+            enemy.init(enemyTex, new Vector3f(10, 2, 10));
+
             texture.bind();
+            enemyTex.bind();
             program.init("/shaders/vertex/default.vert",
                          "/shaders/fragment/default.frag");
             program.use();
             program.setTextureUnit(texture, "sampler");
+            program.setTextureUnit(enemyTex, "enemySampler");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -41,6 +49,9 @@ public class DungeonScreen implements Screen {
             }
         });
 
+        enemy.updateFacing(
+                new Vector3f(camera.getEye())
+                        .sub(enemy.getPos()).normalize());
         world.updateRenderTargets(camera.getEye(), 5.0f);
         if (world.isInside(camera.getEye())) {
             camera.undoMove();
@@ -56,5 +67,7 @@ public class DungeonScreen implements Screen {
         program.setVector3(camera.getEye(), "eye");
 
         world.render();
+
+        enemy.render();
     }
 }
