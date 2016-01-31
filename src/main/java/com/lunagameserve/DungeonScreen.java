@@ -17,6 +17,7 @@ public class DungeonScreen implements Screen {
     private Texture2D texture = new Texture2D();
     private Texture2D enemyTex = new Texture2D();
     private Billboard enemy = new Billboard();
+    private boolean hideNextFrame = false;
 
     public DungeonScreen() {
         try {
@@ -59,12 +60,16 @@ public class DungeonScreen implements Screen {
         }
         enemy.setPos(world.getEnemyPos());
 
+        if (hideNextFrame) {
+            hideNextFrame = false;
+            world.moveEnemy();
+        }
+
         if (camera.getEye().sub(enemy.getPos()).length() < 3.0f) {
-            /*
-            return UpdatePacket.makePush(new TransitionScreen(this,
-                                         new BattleScreen()));
-                                         */
-            System.out.println("Battle!");
+            UpdatePacket p = UpdatePacket.makePush(new TransitionScreen(this,
+                    new BattleScreen()));
+            hideNextFrame = true;
+            return p;
         }
         return UpdatePacket.makeKeep();
     }

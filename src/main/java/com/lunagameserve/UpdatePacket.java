@@ -25,4 +25,12 @@ public final class UpdatePacket {
     public static UpdatePacket makeKeep() {
         return new UpdatePacket(UpdateResult.KEEP, null);
     }
+
+    public UpdateResult getResult() {
+        return this.result;
+    }
+
+    public Screen getScreen() {
+        return this.screen;
+    }
 }

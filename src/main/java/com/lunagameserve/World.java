@@ -31,6 +31,11 @@ public class World {
         visibleBlocks.create();
 
         /* Pick one of the rooms to hold an enemy */
+        // enemyRoom = rand.nextInt(rooms.size());
+        enemyRoom = 0;
+    }
+
+    public void moveEnemy() {
         enemyRoom = rand.nextInt(rooms.size());
     }
 
