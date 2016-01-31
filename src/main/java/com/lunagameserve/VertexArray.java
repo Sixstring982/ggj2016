@@ -43,6 +43,7 @@ public class VertexArray {
     public void clear() {
         verts.clear();
         normals.clear();
+        texs.clear();
     }
 
     public boolean isReady() {

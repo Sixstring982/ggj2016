@@ -19,6 +19,7 @@ public class DungeonScreen implements Screen {
         try {
             world.load();
             texture.load(getClass().getResourceAsStream("/textures/cobble.png"));
+            texture.bind();
             program.init("/shaders/vertex/default.vert",
                          "/shaders/fragment/default.frag");
             program.use();

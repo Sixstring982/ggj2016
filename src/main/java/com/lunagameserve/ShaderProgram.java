@@ -112,7 +112,6 @@ public class ShaderProgram {
 
     public void setTextureUnit(Texture2D tex, String name) {
         int loc = glGetUniformLocation(programId, name);
-        tex.bind();
         glUniform1i(loc, tex.getUnit());
     }
 }

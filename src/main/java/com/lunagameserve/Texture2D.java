@@ -1,6 +1,7 @@
 package com.lunagameserve;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
+import org.lwjgl.opengl.GLUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +22,7 @@ public class Texture2D {
         if (!ready) {
             throw new IllegalStateException("Texture not ready.");
         }
-        glActiveTexture(GL_TEXTURE0 + unitId);
+        glActiveTexture(GL_TEXTURE0 + getUnit());
         glBindTexture(GL_TEXTURE_2D, id);
     }
 
