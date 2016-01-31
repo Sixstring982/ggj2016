@@ -84,7 +84,7 @@ public class Camera {
     }
 
     public Vector3f getEye() {
-        return position;
+        return new Vector3f(position);
     }
 
     public Vector3f getFeet() {

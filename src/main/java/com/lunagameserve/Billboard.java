@@ -18,6 +18,10 @@ public class Billboard {
         array.create();
     }
 
+    public void setPos(Vector3f pos) {
+        this.pos = new Vector3f(pos);
+    }
+
     public Vector3f getPos() {
         return pos;
     }

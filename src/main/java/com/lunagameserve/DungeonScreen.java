@@ -21,6 +21,7 @@ public class DungeonScreen implements Screen {
     public DungeonScreen() {
         try {
             world.load();
+            enemy.setPos(world.getEnemyPos());
             texture.load(getClass().getResourceAsStream("/textures/cobble.png"));
             enemyTex.load(getClass().getResourceAsStream("/textures/enemy.png"));
             enemy.init(enemyTex, new Vector3f(10, 2, 10));
@@ -56,6 +57,15 @@ public class DungeonScreen implements Screen {
         if (world.isInside(camera.getEye())) {
             camera.undoMove();
         }
+        enemy.setPos(world.getEnemyPos());
+
+        if (camera.getEye().sub(enemy.getPos()).length() < 3.0f) {
+            /*
+            return UpdatePacket.makePush(new TransitionScreen(this,
+                                         new BattleScreen()));
+                                         */
+            System.out.println("Battle!");
+        }
         return UpdatePacket.makeKeep();
     }
 
@@ -68,6 +78,8 @@ public class DungeonScreen implements Screen {
 
         world.render();
 
-        enemy.render();
+        if (world.isInEnemyRoom(camera.getEye())) {
+            enemy.render();
+        }
     }
 }

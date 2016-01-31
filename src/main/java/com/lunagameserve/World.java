@@ -17,16 +17,21 @@ public class World {
     private Random rand = new Random(System.nanoTime());
     private VertexArray visibleBlocks = new VertexArray();
     private Set<Vector3i> takenOffsets = new HashSet<Vector3i>();
+    private int enemyRoom = 0;
 
     void load() throws IOException {
-        String[] validRooms = new String[]{
-                "template", "room_1", "room_3", "room_4"
-        };
+        String[] validRooms = new String[13];
+        for (int i = 0; i < validRooms.length; i++) {
+            validRooms[i] = "room_" + (i + 1);
+        }
 
         Room r = genRoom(validRooms[0], new Vector3i(0, 0, 0));
         rooms.add(r);
         hookupExits(r, validRooms);
         visibleBlocks.create();
+
+        /* Pick one of the rooms to hold an enemy */
+        enemyRoom = rand.nextInt(rooms.size());
     }
 
     private void hookupExits(Room room, String[] roomFiles) throws IOException {
@@ -99,5 +104,14 @@ public class World {
             }
         }
         return false;
+    }
+
+    public boolean isInEnemyRoom(Vector3f eye) {
+        return rooms.get(enemyRoom).containsWithOffset(eye);
+    }
+
+    public Vector3f getEnemyPos() {
+        Vector3i v = rooms.get(enemyRoom).getOffset().add(8, 2, 8);
+        return new Vector3f(v.x, v.y, v.z);
     }
 }

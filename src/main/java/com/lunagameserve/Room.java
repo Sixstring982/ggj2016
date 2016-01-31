@@ -23,6 +23,7 @@ public class Room {
     private Set<Direction> exits = new HashSet<Direction>();
     private Set<Direction> hookups = new HashSet<Direction>();
 
+
     public void load(String path) throws IOException {
         voxels.clear();
         NBTInputStream in = new NBTInputStream(
