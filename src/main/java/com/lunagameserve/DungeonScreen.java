@@ -32,8 +32,6 @@ public class DungeonScreen implements Screen {
             program.init("/shaders/vertex/default.vert",
                          "/shaders/fragment/default.frag");
             program.use();
-            program.setTextureUnit(texture, "sampler");
-            program.setTextureUnit(enemyTex, "enemySampler");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -58,16 +56,22 @@ public class DungeonScreen implements Screen {
         if (world.isInside(camera.getEye())) {
             camera.undoMove();
         }
-        enemy.setPos(world.getEnemyPos());
 
         if (hideNextFrame) {
             hideNextFrame = false;
+            enemyTex.unload();
+            try {
+                enemyTex.load(getClass().getResourceAsStream("/textures/enemy2.png"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             world.moveEnemy();
         }
+        enemy.setPos(world.getEnemyPos());
 
         if (camera.getEye().sub(enemy.getPos()).length() < 3.0f) {
             UpdatePacket p = UpdatePacket.makePush(new TransitionScreen(this,
-                    new BattleScreen()));
+                    new BattleScreen(enemyTex)));
             hideNextFrame = true;
             return p;
         }
@@ -77,6 +81,8 @@ public class DungeonScreen implements Screen {
     public void render() {
         Matrix4f mvp = camera.generateMVP();
         program.use();
+        program.setTextureUnit(texture, "sampler");
+        program.setTextureUnit(enemyTex, "enemySampler");
         program.setMatrix4(mvp, "mvp");
         program.setFloat((float)glfwGetTime(), "iGlobalTime");
         program.setVector3(camera.getEye(), "eye");

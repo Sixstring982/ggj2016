@@ -15,6 +15,7 @@ public class TransitionScreen implements Screen {
     private final Screen toScreen;
 
     private int frame = 0;
+    private boolean pushed = false;
     private VertexArray array = new VertexArray();
 
     public TransitionScreen(Screen from, Screen to) {
@@ -25,7 +26,8 @@ public class TransitionScreen implements Screen {
 
     public UpdatePacket update(long window) {
         frame++;
-        if (frame == MAX_FRAMES) {
+        if (frame == MAX_FRAMES && !pushed) {
+            pushed = true;
             return UpdatePacket.makePush(toScreen);
         } else if (frame > MAX_FRAMES) {
             return UpdatePacket.makePop();

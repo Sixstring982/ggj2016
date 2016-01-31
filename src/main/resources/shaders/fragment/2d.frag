@@ -1,19 +1,20 @@
-#version 300 es
-precision highp float;
-precision mediump int;
+#version 330
 
 out vec4 fragColor;
 
-vec2 fragCoord = gl_FragCoord.xy;
+in vec3 frag_normal;
+in vec2 frag_uv;
+flat in float frag_sampleId;
 
-uniform vec2 iResolution;
-uniform float iGlobalTime;
+uniform sampler2D enemySampler;
+uniform sampler2D boxSampler;
 
 void main(void) {
-  vec2 uv = ((fragCoord.xy / iResolution.xy) - vec2(0.5)) * 2.0;
-
-  float intentisy = 0.5 + 0.5 * sin(length(uv) * 20.0 + iGlobalTime);
-  float theta = dot(vec2(1.0, 0.0), uv * vec2(sin(iGlobalTime), cos(iGlobalTime)));
-  vec3 color = vec3(0.2, 0.0, 0.4) * clamp(pow(sin(theta) + tan(intentisy), 4.0), 0.0, 1.0);
-  fragColor = vec4(color,1.0);
+    if (frag_sampleId < 0.1) {
+        fragColor = texture2D(enemySampler, frag_uv);
+    } else if (frag_sampleId < 2.0) {
+        fragColor = texture2D(boxSampler, frag_uv);
+    } else {
+        fragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    }
 }
